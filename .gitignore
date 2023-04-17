@@ -1,0 +1,14 @@
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Java
+*.class
+*.jar
+*.war
+
+# Ant
+build/
