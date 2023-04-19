@@ -21,6 +21,10 @@ public class Todo {
     public final int groupId;
     public final String name;
     public final boolean done;
+    
+    public String getName() {
+        return name;
+    }
 
     public Todo(int groupId, String name) {
         id = 0;

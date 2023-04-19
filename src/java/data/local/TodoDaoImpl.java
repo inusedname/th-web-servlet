@@ -24,9 +24,9 @@ public class TodoDaoImpl implements TodoDao {
     }
 
     @Override
-    public int insertGroup(TodoGroup group) throws SQLException {
+    public int insertGroup(TodoGroup group) {
         int newId = database.insert(
-                "INSERT INTO tblGroup(name, createMilli) VALUES(?, ?)",
+                "INSERT INTO tbl_group(name, createMilli) VALUES(?, ?)",
                 group.name,
                 group.createMilli
         );
@@ -34,9 +34,9 @@ public class TodoDaoImpl implements TodoDao {
     }
 
     @Override
-    public int insertTodo(Todo todo) throws SQLException {
+    public int insertTodo(Todo todo) {
         int newId = database.insert(
-                "INSERT INTO tblTodo (done, groupId, name) VALUES(?, ?, ?)",
+                "INSERT INTO tbl_todo (done, groupId, name) VALUES(?, ?, ?)",
                 todo.done,
                 todo.groupId,
                 todo.name
@@ -45,9 +45,9 @@ public class TodoDaoImpl implements TodoDao {
     }
 
     @Override
-    public void updateTodo(Todo newTodo) throws SQLException {
+    public void updateTodo(Todo newTodo) {
         database.update(
-                "UPDATE tblTodo SET done=?, groupId=?, name=? WHERE id=?",
+                "UPDATE tbl_todo SET done=?, groupId=?, name=? WHERE id=?",
                 newTodo.done,
                 newTodo.groupId,
                 newTodo.name,
@@ -56,37 +56,39 @@ public class TodoDaoImpl implements TodoDao {
     }
 
     @Override
-    public void deleteTodo(int todoId) throws SQLException {
+    public void deleteTodo(int todoId) {
         database.update(
-                "DELETE FROM tblTodo WHERE id=?",
+                "DELETE FROM tbl_todo WHERE id=?",
                 todoId
         );
     }
 
     @Override
-    public List<TodoGroup> getAllGroups() throws SQLException {
+    public List<TodoGroup> getAllGroups() {
         List<TodoGroup> groups = new ArrayList<>();
-        ResultSet result = database.query(
-                "SELECT * FROM tblGroup"
-        );
-        while (result.next()) {
-            groups.add(TodoGroup.parse(result));
+
+        try (ResultSet result = database.query("SELECT * FROM tbl_group")) {
+            while (result.next()) {
+                groups.add(TodoGroup.parse(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        result.close();
         return groups;
     }
 
     @Override
-    public List<Todo> getTodosForGroup(int groupId) throws SQLException {
+    public List<Todo> getTodosForGroup(int groupId) {
         List<Todo> groups = new ArrayList<>();
-        ResultSet result = database.query(
-                "SELECT * FROM tblTodo WHERE groupId=?",
-                groupId
-        );
-        while (result.next()) {
-            groups.add(Todo.parse(result));
+        try (ResultSet result = database.query(
+                "SELECT * FROM tbl_todo WHERE groupId=?",
+                groupId)) {
+            while (result.next()) {
+                groups.add(Todo.parse(result));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        result.close();
         return groups;
     }
 }

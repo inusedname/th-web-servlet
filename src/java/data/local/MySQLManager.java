@@ -21,7 +21,8 @@ public class MySQLManager {
 
     @Nullable
     public ResultSet query(@Nonnull String query, Object... varargs) {
-        try(PreparedStatement statement = connection.prepareStatement(query)) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
             passingParamsToPrepareStatement(statement, varargs);
             ResultSet resultSet = statement.executeQuery();
             return resultSet;
@@ -33,13 +34,15 @@ public class MySQLManager {
 
     @Nullable
     public Integer insert(@Nonnull String query, Object... varargs) {
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
             passingParamsToPrepareStatement(statement, varargs);
             statement.executeUpdate();
             try (ResultSet resultSet = connection.createStatement().executeQuery("SELECT LAST_INSERT_ID();")) {
+                resultSet.next();
                 return resultSet.getInt(1);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -47,7 +50,8 @@ public class MySQLManager {
 
     @Nullable
     public void update(@Nonnull String query, Object... varargs) {
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
             passingParamsToPrepareStatement(statement, varargs);
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -57,8 +61,15 @@ public class MySQLManager {
 
     public static MySQLManager getInstance() {
         if (_instance == null) {
-            _instance = new MySQLManager();
-            _instance.connect();
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+
+                _instance = new MySQLManager();
+                _instance.connect();
+            } catch (ClassNotFoundException | SQLException ex) {
+                ex.printStackTrace();
+            }
         }
         return _instance;
     }
@@ -89,7 +100,7 @@ public class MySQLManager {
                 } else if (objectClass.equals(Float.class)) {
                     statement.setFloat(i + 1, (Float) varargs[i]);
                 } else if (objectClass.equals(Boolean.class)) {
-                    statement.setObject(i + 1, (Integer) varargs[i], Types.TINYINT);
+                    statement.setObject(i + 1, (Boolean) varargs[i], Types.TINYINT);
                 } else {
                     throw new Exception(objectClass.toString() + "is not supported yet");
                 }

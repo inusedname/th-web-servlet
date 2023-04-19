@@ -38,7 +38,7 @@ public class TodoGroup {
         try {
             int id = sqlResult.getInt("id");
             String name = sqlResult.getString("name");
-            long createMilli = sqlResult.getInt("createMilli");
+            long createMilli = sqlResult.getLong("createMilli");
             
             return new TodoGroup(id, name, createMilli);
         } catch (SQLException e) {

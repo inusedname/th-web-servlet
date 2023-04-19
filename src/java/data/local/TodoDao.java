@@ -14,20 +14,20 @@ import java.util.List;
  */
 public interface TodoDao {
     // Insert a new group into the database and return its ID
-    public int insertGroup(TodoGroup group) throws SQLException;
+    public int insertGroup(TodoGroup group);
 
     // Insert a new todo item into the database and return its ID
-    public int insertTodo(Todo todo) throws SQLException;
+    public int insertTodo(Todo todo);
 
     // Update an existing todo item in the database
-    public void updateTodo(Todo newTodo) throws SQLException;
+    public void updateTodo(Todo newTodo);
 
     // Delete a todo item from the database
-    public void deleteTodo(int todoId) throws SQLException;
+    public void deleteTodo(int todoId);
 
     // Retrieve a list of all groups from the database
-    public List<TodoGroup> getAllGroups() throws SQLException;
+    public List<TodoGroup> getAllGroups();
 
     // Retrieve all todos for a given group from the database
-    public List<Todo> getTodosForGroup(int groupId) throws SQLException;
+    public List<Todo> getTodosForGroup(int groupId);
 }
